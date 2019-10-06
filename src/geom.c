@@ -1,6 +1,6 @@
 #include "/usr/local/include/raylib.h"
 #include "/usr/local/include/raymath.h"
-#include "../stb/stretchy_buffer.h"
+#include "/usr/local/include/stb/stretchy_buffer.h"
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -184,7 +184,7 @@ int main() {
     Vector2 *held_point = 0;
     bool subdiv_changed = 0;
 
-while (!WindowShouldClose()) { // Detect window close button or ESC key
+while (!WindowShouldClose()) {
     overlap = 0;
     subdiv_changed = 0;
 
@@ -207,6 +207,7 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
                 if (fabs(mouse_pos.x - input_points[i].x) < overlap_epsilon && fabs(mouse_pos.y - input_points[i].y) < overlap_epsilon)
                     held_point = &input_points[i];
         }
+
         if (CheckCollisionPointRec(mouse_pos, drawing_boundary) && !drawing_finished) {
             if (overlap) {
                 shape_closed = 1;
@@ -218,8 +219,10 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
             } else {
                 sb_push(input_points, mouse_pos);
             }
+
         } else if (CheckCollisionPointRec(mouse_pos, show_points_rec)) {
             display_points = !display_points;
+
         } else if (CheckCollisionPointRec(mouse_pos, subdiv_none_rec)) {
             curr_subdivision_scheme = subdivide_none;
             if (!drawing_finished && sb_count(input_points))
@@ -228,6 +231,7 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
                 options[i].active = 0;
             options[1].active = 1;
             subdiv_changed = 1;
+
         } else if (CheckCollisionPointRec(mouse_pos, subdiv_bspl_quad_rec)) {
             curr_subdivision_scheme = bspline_quadratic;
             if (!drawing_finished && sb_count(input_points))
@@ -236,6 +240,7 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
                 options[i].active = 0;
             options[2].active = 1;
             subdiv_changed = 1;
+
         } else if (CheckCollisionPointRec(mouse_pos, subdiv_bspl_cube_rec)) {
             curr_subdivision_scheme = bspline_cubic;
             if (!drawing_finished && sb_count(input_points))
@@ -244,6 +249,7 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
                 options[i].active = 0;
             options[3].active = 1;
             subdiv_changed = 1;
+
         } else if (CheckCollisionPointRec(mouse_pos, subdiv_4_points_rec)) {
             curr_subdivision_scheme = four_point_scheme;
             if (!drawing_finished && sb_count(input_points))
@@ -252,6 +258,7 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
                 options[i].active = 0;
             options[4].active = 1;
             subdiv_changed = 1;
+
         } else if (CheckCollisionPointRec(mouse_pos, new_drawing_rec)) {
             sb_free(input_points);
             input_points = 0;
@@ -265,12 +272,14 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
                 options[i].active = 0;
             options[1].active = 1;
             subdiv_changed = 1;
+
         } else if (CheckCollisionPointRec(mouse_pos, inc_depth_rec)) {
             ++subdivision_depth;
             if (subdivision_depth > 9)
                 subdivision_depth = 9;
             depth_counter_opt->str = depth_counter_strs[subdivision_depth - 1];
             subdiv_changed = 1;
+
         } else if (CheckCollisionPointRec(mouse_pos, dec_depth_rec)) {
             --subdivision_depth;
             if (subdivision_depth == 0)
@@ -334,13 +343,13 @@ while (!WindowShouldClose()) { // Detect window close button or ESC key
                 if (shape_closed)
                     DrawLineEx(subdivided_points[i], subdivided_points[0], line_thickness, BLACK);
         }
-        
+
         // draw mouse circle
         if (!drawing_finished && !overlap && CheckCollisionPointRec(mouse_pos, drawing_boundary))
             DrawCircleLines(mouse_pos.x, mouse_pos.y, 3, BLUE);
     EndDrawing();
-} // end program while loop
-    
+}
+
     CloseWindow();
     return 0;
 }
